@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Doughnut Chart</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="engage-exp">
+        Trend 1:
+        <input type="text" id="name1" name="name1" value="AngularJS">Size:
+        <input type="number" id="size1" name="size1" min="10" max="100" step="10" value="60">
+        <br>Trend 2:
+        <input type="text" id="name2" name="name2" value="BackboneJS">Size:
+        <input type="number" id="size2" name="size2" min="10" max="100" step="10" value="40">
+        <br>Trend 3:
+        <input type="text" id="name3" name="name3" value="Grunt">Size:
+        <input type="number" id="size3" name="size3" min="10" max="100" step="10" value="30">
+        <br>Trend 4:
+        <input type="text" id="name4" name="name4" value="Bower">Size:
+        <input type="number" id="size4" name="size4" min="10" max="100" step="10" value="50">
+        <br>Trend 5:
+        <input type="text" id="name5" name="name5" value="NodeJS">Size:
+        <input type="number" id="size5" name="size5" min="10" max="100" step="10" value="80">
+        <br>
+        <br>
+        <canvas style="display:none;" id="working-canvas" height="100" width="100"></canvas>
+        <canvas id="final-canvas" height="150" width="500"></canvas>
+        <br>
+        <form method="post" enctype="multipart/form-data" action="/file-upload">
+            <input type="button" onclick="uploadimage();">Send
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            drawGraphs('#size1', '#name1', 0);
+            drawGraphs('#size2', '#name2', 100);
+            drawGraphs('#size3', '#name3', 200);
+            drawGraphs('#size4', '#name4', 300);
+            drawGraphs('#size5', '#name5', 400);
+            $('#size1').change(function() {
+                drawGraphs('#size1', '#name1', 0)
+            });
+            $('#size2').change(function() {
+                drawGraphs('#size2', '#name2', 100)
+            });
+            $('#size3').change(function() {
+                drawGraphs('#size3', '#name3', 200)
+            });
+            $('#size4').change(function() {
+                drawGraphs('#size4', '#name4', 300)
+            });
+            $('#size5').change(function() {
+                drawGraphs('#size5', '#name5', 400)
+            });
+            $('#name1').change(function() {
+                drawGraphs('#size1', '#name1', 0)
+            });
+            $('#name2').change(function() {
+                drawGraphs('#size2', '#name2', 100)
+            });
+            $('#name3').change(function() {
+                drawGraphs('#size3', '#name3', 200)
+            });
+            $('#name4').change(function() {
+                drawGraphs('#size4', '#name4', 300)
+            });
+            $('#name5').change(function() {
+                drawGraphs('#size5', '#name5', 400)
+            });
+            $('#export').click(function() {
+                exportToPNG()
+            });
+        });
+
+        function drawGraphs(size1, name1, offset) {
+            var size = $(size1)[0].value;
+            var trendName = $(name1)[0].value;
+            $.when(createGraph(parseInt(size), size + "%")).then(updateMainCanvas(trendName, offset));
+        }
+
+        function createGraph(trendSize, trendText) {
+            var data = [];
+            data.push({
+                value: trendSize,
+                color: "#F7464A"
+            });
+            data.push({
+                value: 100 - trendSize,
+                color: "Grey"
+            });
+            var canvas = $('#working-canvas')[0];
+            var context = canvas.getContext("2d");
+            new Chart(context).Doughnut(data, {
+                animation: false
+            });
+            context.font = '12pt Calibri';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = 'grey';
+            var x = canvas.width / 2;
+            var y = canvas.height / 2;
+            context.fillText(trendText, x, y);
+        }
+
+        function updateMainCanvas(trendName, xOffset) {
+            var wCanvas = $('#working-canvas')[0];
+            var canvas = $('#final-canvas')[0];
+            var context = canvas.getContext("2d");
+            context.font = '12pt Calibri';
+            context.textAlign = 'center';
+            context.fillStyle = '#F7464A';
+            context.clearRect(xOffset, 0, 100, 150);
+            context.fillText(trendName, wCanvas.width / 2 + xOffset, wCanvas.height + 20);
+            context.drawImage(wCanvas, xOffset, 0);
+        }
+
+        function exportToPNG() {
+            window.open($('#final-canvas')[0].toDataURL("image/png"));
+        }
+
+        function uploadimage() {
+            console.log('Upload image');
+            $.ajax({
+                type: "POST",
+                url: "/upload-image",
+                data: {
+                    imgBase64: $('#final-canvas')[0].toDataURL("image/png")
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
