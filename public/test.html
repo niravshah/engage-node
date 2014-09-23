@@ -2,12 +2,16 @@
 To change this template use Tools | Templates.
 -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html ng-app="phonecatApp">
 
 <head>
     <title></title>
     <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+    <script src="js/checklist-model.js"></script>
+    <script src="js/angular-controller.js"></script>
+    
     <script>
         $(function() {
             var socket = io.connect("http://page-alarm.codio.io:3000/");
@@ -15,16 +19,57 @@ To change this template use Tools | Templates.
                 console.log(data.message);
                 $('#messages').append('<li>' + data.event + "|" + data.msg.email + '</li>');
             });
+            socket.on('pocket-auth', function(data) {
+                $('#messages').append('<li>' + data.event + '</li>');
+                $('#add-link').show();
+                var appElement = document.querySelector('[ng-controller=PhoneListCtrl]');
+                var $scope = angular.element(appElement).scope();
+                $scope.$emit('updateData');
+            });
+            socket.on('pocket-event', function(data) {
+                console.log('Pocket Event!');
+                $('#messages').append('<li>' + data.event + '</li>');
+            });
             socket.emit('register', {
                 'name': 'test-engage'
+            });
+            $.get('/pocket', {
+                'name': 'test-engage'
+            }).success(function(data) {
+                $('#pocket-auth-link').attr('href', data.redirect_url);                
             });
         });
     </script>
 </head>
 
 <body>
-    <p>Messages</p>
+    <div ng-controller="PocketAuthCtrl">
+        <a id="pocket-auth-link" href="" target="_blank">Pocket Auth</a>
+    </div>
+    
+    <p>Notifications</p>
     <ul id="messages"></ul>
+    <br>
+    <div id="add-link" style="display:none;" ng-controller="PocketAddCtrl">
+        Add New Content : <input id="url" type="text"></input>
+        <button ng-click="addToPocket()">Add</button>
+    </div>    
+    <div ng-controller="PhoneListCtrl">
+        Filter : <input type="text" ng-model="searchText">
+        <br/>
+        <table>
+            <tr ng-repeat="item in items | filter:searchText">                
+                <td> <input type="checkbox" checklist-model="selected.items" checklist-value="item" ng-click="printSelected()"/><a href="{{item.resolved_url}}">{{item.resolved_title}}</a><td/>
+            </tr>
+        </table>
+        <img src="http://www.shikshatarang.com/images/reload_captcha.png" alt="Reload" ng-click="reloadData()"/>
+        <table>
+            <tr ng-repeat="item in selected.items">
+                <td>{{item.resolved_title}}</td>
+            </tr>
+        </table>
+        <button ng-click=>Send</button>
+    </div>
 </body>
 
 </html>
