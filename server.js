@@ -28,7 +28,6 @@ app.get('/pocket-c', pocket.callback);
 app.post('/pocket-add', pocket.addArticle);
 app.get('/pocket-get', pocket.getArticles);
 app.post('/mandrill-events', mandrill.processMessageEvents);
-app.post('/mandrill-inbound', mandrill.processInboundEmails);
-app.post('/mandrill-archive-inbound', mandrill.archiveInbound);
 app.post('/upload-image', mandrill.uploadImageAndSend);
+app.post('/add-articles-send', mandrill.addArticlesAndSend);
 app.get('/send', mandrill.sendTemplateMessage);

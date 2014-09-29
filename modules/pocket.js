@@ -48,6 +48,7 @@ exports.getArticles = function(request, response) {
         'consumer_key': consumer_key,
         'access_token': request.session.pocket_access_token,
         'sort': 'newest',
+        'detailType':'complete',
         'count': 10
     }).set('Content-Type', 'application/json; charset=UTF8').set('X-Accept', 'application/json').end(function(error, res) {
         response.send(200, {

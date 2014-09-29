@@ -11,7 +11,13 @@ To change this template use Tools | Templates.
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
     <script src="js/checklist-model.js"></script>
     <script src="js/angular-controller.js"></script>
-    
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+        api_key: 3ntk7givavqe
+         onLoad: onLinkedInLoad
+         authorize: true
+    </script>
+
+
     <script>
         $(function() {
             var socket = io.connect("http://page-alarm.codio.io:3000/");
@@ -36,39 +42,60 @@ To change this template use Tools | Templates.
             $.get('/pocket', {
                 'name': 'test-engage'
             }).success(function(data) {
-                $('#pocket-auth-link').attr('href', data.redirect_url);                
+                $('#pocket-auth-link').attr('href', data.redirect_url);
             });
         });
+
+        function onLinkedInLoad() {
+            console.log("LinkedIn Load");
+            IN.Event.on(IN, "auth", onLinkedInAuth);
+        }
+
+        function onLinkedInAuth() {
+            $('#linkedin-logout').show();
+            IN.API.Profile("me").result(function(me) {
+                var appElement = document.querySelector('[ng-controller=PhoneListCtrl]');
+                var $scope = angular.element(appElement).scope();
+                $scope.lnattrs.push({name: 'AUTHOR-FNAME', content: me.values[0].firstName});
+                $scope.lnattrs.push({name:'AUTHOR-LNAME' , content: me.values[0].lastName});
+                $scope.lnattrs.push({name:'AUTHOR-IMAGE' , content: me.values[0].pictureUrl});
+                $scope.lnattrs.push({name:'AUTHOR-DESC' , content: me.values[0].headline});                
+                $scope.$emit('lnattrsprint');
+            });
+        }
     </script>
 </head>
 
 <body>
-    <div ng-controller="PocketAuthCtrl">
-        <a id="pocket-auth-link" href="" target="_blank">Pocket Auth</a>
-    </div>
-    
-    <p>Notifications</p>
-    <ul id="messages"></ul>
-    <br>
-    <div id="add-link" style="display:none;" ng-controller="PocketAddCtrl">
-        Add New Content : <input id="url" type="text"></input>
-        <button ng-click="addToPocket()">Add</button>
-    </div>    
     <div ng-controller="PhoneListCtrl">
-        Filter : <input type="text" ng-model="searchText">
+        <a id="pocket-auth-link" href="" target="_blank">Pocket Auth</a>
+        <div class="">
+            <script type="in/Login"></script>
+            <a id="linkedin-logout" href="javascript:IN.User.logout();">LN Logout</a>
+        </div>
+        <p>Notifications</p>
+        <ul id="messages"></ul>
+        <br>Add New Content :
+        <input id="url" type="text"></input>
+        <button ng-click="addToPocket()">Add</button>
+
+        Filter :
+        <input type="text" ng-model="searchText">
         <br/>
         <table>
-            <tr ng-repeat="item in items | filter:searchText">                
-                <td> <input type="checkbox" checklist-model="selected.items" checklist-value="item" ng-click="printSelected()"/><a href="{{item.resolved_url}}">{{item.resolved_title}}</a><td/>
+            <tr ng-repeat="item in items | filter:searchText">
+                <td>
+                    <input type="checkbox" checklist-model="selected.items" checklist-value="item" ng-click="printSelected()" /><a href="{{item.resolved_url}}">{{item.resolved_title}}</a>
+                    <td/>
             </tr>
         </table>
-        <img src="http://www.shikshatarang.com/images/reload_captcha.png" alt="Reload" ng-click="reloadData()"/>
+        <!--img src="http://www.shikshatarang.com/images/reload_captcha.png" alt="Reload" ng-click="reloadData()"/-->
         <table>
             <tr ng-repeat="item in selected.items">
-                <td>{{item.resolved_title}}</td>
+                <td>{{item}}</td>
             </tr>
         </table>
-        <button ng-click=>Send</button>
+        <input type="button" ng-click="addArticlesAndSend()">Send</button>
     </div>
 </body>
 

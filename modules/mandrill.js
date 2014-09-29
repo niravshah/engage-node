@@ -3,7 +3,6 @@ var mandrill_client = new mandrill.Mandrill('cIUPQCSZ5Kz6gmwlKf188Q');
 var fs = require("fs");
 var globals = require('./globals.js');
 var server = require('./../server.js');
-
 exports.processMessageEvents = function(request, response) {
     var events = eval('(' + request.body.mandrill_events + ')');
     for(i in events) {
@@ -11,12 +10,18 @@ exports.processMessageEvents = function(request, response) {
         if(events[i].event == 'click') {
             console.log(events[i].url + "|" + events[i].user_agent_parsed.mobile + "|" + events[i].location.country_short);
         }
+        if(events[i].msg.from_email == 'message-archive@letsengage.co') {
+            fs.writeFile("public/archive.html", events[i].msg.html, function(err) {
+                if(err) throw err;
+                console.log('It\'s saved!');
+            });
+        }
         delete events[i]._id;
         globals.nots.insert(events[i], function(err, doc) {
             if(err) {
                 console.log("Error while writing to MongoDB: " + err);
             } else {
-                console.log("Inserted object to MongoDBL " + JSON.stringify(doc));
+                console.log("Inserted object to MongoDBL ");
             }
         });
         var to = globals.clients[events[i].msg.subaccount];
@@ -32,59 +37,31 @@ exports.processMessageEvents = function(request, response) {
         date: d
     });
 };
-exports.processInboundEmails = function(request, response) {
-    var events = eval('(' + request.body.mandrill_events + ')');
-    for(i in events) {
-        console.log(events[i].event + "|" + events[i].msg.email + "|" + events[i].msg.subaccount);
-        if(events[i].event == 'inbound') {
-            console.log(events[i].msg.raw_msg + "|" + events[i].msg.from_email + "|" + events[i].msg.from_name);
-        }
-        var to = globals.clients[events[i].msg.subaccount];
-        if(to != undefined) {
-            console.log("To " + to);
-            server.ioCon.to(to).emit('message', events[i]);
-        } else {
-            console.log("No open socket");
-        }
-    }
-    var d = new Date();
-    response.send(200, {
-        date: d
-    });
-};
-exports.archiveInbound = function(request, response) {
-    var events = eval('(' + request.body.mandrill_events + ')');
-    for(i in events) {
-        console.log(events[i].event + "|" + events[i].msg.email + "|" + events[i].msg.subaccount);
-        if(events[i].event == 'inbound') {            
-            fs.writeFile("public/archive.html", events[i].msg.html, function(err) {
-                if(err) throw err;
-                console.log('It\'s saved!');
-            });
-        }
-    }
-    var d = new Date();
-    response.send(200, {
-        date: d
-    });
-};
+exports.addArticlesAndSend = function(request, response) {
+    var message = getMessage(request.body.merge_vars);
+    //console.log("addArticlesAndSend" + JSON.stringify(message));
+    sendTemplateMessage("test", [], message, response);
+}
 exports.uploadImageAndSend = function(request, response) {
     var base64Data = request.body.imgBase64.replace(/^data:image\/png;base64,/, "");
     fs.writeFile("public/out.png", base64Data, 'base64', function(err) {
         if(err) throw err;
         console.log('It\'s saved!');
     });
-    var message = getMessage("out.png");
+    var mergevars = [{
+        "name": "IMAGENAME",
+        "content": "out.png"
+    }];
+    var message = getMessage(mergevars);
     sendTemplateMessage("test", [], message, response);
 };
 exports.sendTemplateMessage = function(request, response) {
-    var template_name = "test";
-    var template_content = [];
-    var message = getMessage(null);
-    sendTemplateMessage(template_name, template_content, message, response);
+    var mergevars = [];
+    var message = getMessage(mergevars);
+    sendTemplateMessage("test", [], message, response);
 };
 
-function getMessage(imagename) {
+function getMessage(mergevars) {
     return {
         "subject": "Engage Trends",
         "from_email": "nirav@letsengage.co",
@@ -111,10 +88,7 @@ function getMessage(imagename) {
         "signing_domain": null,
         "return_path_domain": null,
         "merge": false,
-        "global_merge_vars": [{
-            "name": "IMAGENAME",
-            "content": imagename
-        }],
+        "global_merge_vars": mergevars,
         "merge_vars": [],
         "tags": [],
         "subaccount": "test-engage",
@@ -141,7 +115,6 @@ function sendTemplateMessage(templateName, templateContent, message, response) {
         "ip_pool": null,
         "send_at": null
     }, function(result) {
-        console.log(result);
         response.send(200, result);
     }, function(e) {
         console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
