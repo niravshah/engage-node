@@ -15,6 +15,8 @@ app.use(express.cookieParser());
 app.use(express.session({
     secret: '1234567890QWERTY'
 }));
+app.set('view engine','ejs');
+
 var server = app.listen(3000, function() {
     console.log('Listening on port %d', server.address().port);
 });
@@ -23,6 +25,9 @@ var io = require('socket.io').listen(server);
 io.sockets.on('connection', socket.socketConnection);
 exports.ioCon = io;
 
+app.get('/',function(reques,response){
+    response.render('engage');
+});
 app.get('/pocket', pocket.getRequestToken);
 app.get('/pocket-c', pocket.callback);
 app.post('/pocket-add', pocket.addArticle);

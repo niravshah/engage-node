@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+
+<head>
+  <% include partials/head %>
+
+</head>
+
+<body class="">
+    <section class="vbox">
+        <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
+          <% include partials/header %>
+        </header>
+        <section>
+            <section class="hbox stretch">
+                <section id="content">
+                    <section class="hbox stretch">
+                        <section>
+                            <section class="vbox">
+                                <section class="scrollable padder">
+                                    <div class="row">
+                                        <div class="col-lg-1"></div>
+                                        <div class="col-lg-10 padder-v">
+                                            <section class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-3">                                                        
+                                                        </div>
+                                                        <div class="col-lg-8 bubble">
+                                                            <h2 id="engager-hello" style="white-space: pre"></h2>
+                                                            <h1 id="newsletter-name"></h1>
+                                                        </div>
+                                                        <div class="col-lg-1" ></div>                                                        
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-2"></div>
+                                                        <div class="col-lg-4" >
+                                                            <img src="images/hello.svg" width="400" />
+                                                        </div>
+                                                        <div class="col-log-6"></div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-lg-1"></div>
+                                    </div>
+                                </section>
+                            </section>
+                        </section>                 
+                    </section>                    
+                </section>
+            </section>
+        </section>
+    </section>
+   <%include partials/footer%>>
+ <script>
+  $(function(){
+      
+      
+      
+      $("#engager-hello").typed({
+        strings: ["Hello! I am Engager.\nLets create your first Engaging Newsletter.\n\nWhat would you like to call it?"],
+        typeSpeed: 0,
+        showCursor: false,
+        startDelay: 500,
+        callback:function(){         
+            
+            new Medium({
+              element: document.getElementById('newsletter-name'),
+              mode: Medium.inlineMode,
+              maxLength: 25,
+                placeholder: 'Enter Name...'
+            });
+        }
+          
+      });
+      
+   
+
+  });
+</script>
+</body>
+</html>
