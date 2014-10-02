@@ -9139,8 +9139,8 @@ a.list-group-item:hover, a.list-group-item:focus {
 .bubble {
     background-image: url('../images/bubble.svg');
     background-repeat: no-repeat;
-    background-size: 100%;
-    min-height: 600px;
+    background-size: 90%;
+    min-height: 390px;
 }
 .bubble h2{
     padding-top:20px;
@@ -9152,7 +9152,6 @@ a.list-group-item:hover, a.list-group-item:focus {
 }
 
 .bubble .Medium{
-    padding-top:20px;
     padding-left:20px;
     padding-right:10px;
     font-family:'Roboto', sans-serif;

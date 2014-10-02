@@ -3,9 +3,7 @@
 
 <head>
   <% include partials/head %>
-
 </head>
-
 <body class="">
     <section class="vbox">
         <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
@@ -33,17 +31,51 @@
                                                         <div class="col-lg-1" ></div>                                                        
                                                     </div>
                                                     <div class="row">
-                                                        <div class="col-lg-2"></div>
-                                                        <div class="col-lg-4" >
-                                                            <img src="images/hello.svg" width="400" />
+                                                        <div class="col-lg-1"></div>
+                                                        <div class="col-lg-8" >
+                                                            <img src="images/hello.svg" width="500" />
                                                         </div>
-                                                        <div class="col-log-6"></div>
+                                                        <div class="col-lg-3">
+                                                            <a href="#" class="btn btn-s-md btn-primary">Let's Go!</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </section>
                                         </div>
                                         <div class="col-lg-1"></div>
                                     </div>
+                                     <div class="row">
+                                        <div class="col-lg-1"></div>
+                                        <div class="col-lg-10 padder-v">
+                                            <section class="panel panel-default">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-3">                                                        
+                                                        </div>
+                                                        <div class="col-lg-8 bubble">
+                                                            <h2 id="engager-hello" style="white-space: pre"></h2>
+                                                        </div>
+                                                        <div class="col-lg-1" ></div>                                                        
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-4" >
+                                                            <img src="images/show.svg" width="400" />
+                                                        </div>
+                                                        <div class="col-log-8"></div>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col-lg-1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-1"></div>
+                                        <div class="col-lg-10 padder-v">
+                                            <section class="panel panel-default">
+                                                <div class="panel-body"></div>
+                                            </section>
+                                        </div>
                                 </section>
                             </section>
                         </section>                 
@@ -55,16 +87,12 @@
    <%include partials/footer%>>
  <script>
   $(function(){
-      
-      
-      
       $("#engager-hello").typed({
-        strings: ["Hello! I am Engager.\nLets create your first Engaging Newsletter.\n\nWhat would you like to call it?"],
+        strings: ["Hello! I am Engager.\nLets create your first Engaging Newsletter.\nWhat would you like to call it?"],
         typeSpeed: 0,
         showCursor: false,
         startDelay: 500,
         callback:function(){         
-            
             new Medium({
               element: document.getElementById('newsletter-name'),
               mode: Medium.inlineMode,
@@ -72,11 +100,7 @@
                 placeholder: 'Enter Name...'
             });
         }
-          
-      });
-      
-   
-
+      });   
   });
 </script>
 </body>

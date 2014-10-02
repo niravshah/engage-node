@@ -1,6 +1,3 @@
-<!--
-To change this template use Tools | Templates.
--->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html ng-app="phonecatApp">
 
@@ -9,6 +6,7 @@ To change this template use Tools | Templates.
     <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+    <script type="text/javascript" src="js/Chart.min.js"></script>
     <script src="js/checklist-model.js"></script>
     <script src="js/angular-controller.js"></script>
     <script type="text/javascript" src="http://platform.linkedin.com/in.js">
@@ -16,7 +14,11 @@ To change this template use Tools | Templates.
          onLoad: onLinkedInLoad
          authorize: true
     </script>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/slick/slick.min.js"></script>
+    <link href='js/slick/slick.css' rel='stylesheet' type='text/css'>
 
     <script>
         $(function() {
@@ -26,6 +28,7 @@ To change this template use Tools | Templates.
                 $('#messages').append('<li>' + data.event + "|" + data.msg.email + '</li>');
             });
             socket.on('pocket-auth', function(data) {
+                console.log('pocket auth');
                 $('#messages').append('<li>' + data.event + '</li>');
                 $('#add-link').show();
                 var appElement = document.querySelector('[ng-controller=PhoneListCtrl]');
@@ -44,6 +47,25 @@ To change this template use Tools | Templates.
             }).success(function(data) {
                 $('#pocket-auth-link').attr('href', data.redirect_url);
             });
+            $('.slick').slick({
+                arrows: true,
+                infinite: true,
+                slidesToShow: 3,
+                slidesToScroll: 1
+            });
+            $("#uploadFile").on('change', function(e, data) {
+                if(this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#target').attr('src', e.target.result);
+                        var appElement = document.querySelector('[ng-controller=NewsletterCampaignCtrl]');
+                        var $scope = angular.element(appElement).scope();
+                        $scope.fileDataToUpload = e.target.result;
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                    console.log('File Size: ', (this.files[0].size / 1024).toFixed(4));
+                }
+            });
         });
 
         function onLinkedInLoad() {
@@ -54,48 +76,120 @@ To change this template use Tools | Templates.
         function onLinkedInAuth() {
             $('#linkedin-logout').show();
             IN.API.Profile("me").result(function(me) {
-                var appElement = document.querySelector('[ng-controller=PhoneListCtrl]');
+                var appElement = document.querySelector('[ng-controller=LinkedInCtrl]');
                 var $scope = angular.element(appElement).scope();
-                $scope.lnattrs.push({name: 'AUTHOR-FNAME', content: me.values[0].firstName});
-                $scope.lnattrs.push({name:'AUTHOR-LNAME' , content: me.values[0].lastName});
-                $scope.lnattrs.push({name:'AUTHOR-IMAGE' , content: me.values[0].pictureUrl});
-                $scope.lnattrs.push({name:'AUTHOR-DESC' , content: me.values[0].headline});                
-                $scope.$emit('lnattrsprint');
+                $scope.lnattrs['ln_fname'] = me.values[0].firstName;
+                $scope.lnattrs['ln_lname'] = me.values[0].lastName;
+                $scope.lnattrs['ln_image'] = me.values[0].pictureUrl;
+                $scope.lnattrs['ln_headline'] = me.values[0].headline;
+                $scope.$apply();
             });
         }
     </script>
 </head>
 
 <body>
-    <div ng-controller="PhoneListCtrl">
-        <a id="pocket-auth-link" href="" target="_blank">Pocket Auth</a>
-        <div class="">
-            <script type="in/Login"></script>
-            <a id="linkedin-logout" href="javascript:IN.User.logout();">LN Logout</a>
-        </div>
+    <div ng-controller="AccordionCtrl">
+        <accordion close-others=true>
+            <accordion-group is-open="status.open">
+                <accordion-heading>
+                    Accounts <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <div ng-controller="NewsletterCampaignCtrl">
+                    Newsletter Name :
+                    <input type="text" value={{accountCampaign.account}} ng-model="accountCampaign['account']" size="35">
+                    <br/>
+                    <br/>Campaign Name:
+                    <input type="text" value={{accountCampaign.campaign}} ng-model="accountCampaign['campaign']" size="35">
+                    <br/>
+                    <div class="slick-container" style="width:400px;margin:40px">
+                        <div class="slick">
+                            <div ng-repeat="img in imgs">
+                                <h1 ng-click="slickClicked(img);">{{img}}</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        SLick Selected : <span id="slick-selected" ng-model="slickSelected">{{slickSelected}}</span>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <div style="width:100px;height:100px">
+                    <img id="target" src="" style="width:100%;height:auto;" />
+                </div>
+                <input id="uploadFile" type="file" name="image" class="img" />
+
+            </accordion-group>
+            <accordion-group>
+                <accordion-heading>
+                    Trends <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <div ng-controller="ChartJsCtrl" ng-init="drawGraphs()">
+                    <div ng-repeat="trend in trends track by $index">
+                        <input type="text" value={{trends[$index]}} ng-model="trends[$index]" ng-blur="drawGraphs()">
+                        <input type="number" value={{sizes[$index]}} ng-model="sizes[$index]" ng-blur="drawGraphs()">
+                    </div>
+                    <br>
+                    <canvas id="working-canvas" style="display:none;" height="100" width="100"></canvas>
+                    <canvas id="final-canvas" height="150" width="500"></canvas>
+                </div>
+            </accordion-group>
+            <accordion-group>
+                <accordion-heading>
+                    Content <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+            </accordion-group>
+            <accordion-group>
+                <accordion-heading>
+                    Personalize <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                <div ng-controller="LinkedInCtrl">
+                    <h2>Personalize</h2>
+                    <div class="">
+                        <script type="in/Login"></script>
+                        <a id="linkedin-logout" href="javascript:IN.User.logout();">LN Logout</a> 
+                        <p ng-model="lnattrs['fname']">{{lnattrs.fname}}</p>
+                        <p ng-model="lnattrs['lname']">{{lnattrs.lname}}</p>
+                        <p ng-model="lnattrs['headline']">{{lnattrs.headline}}</p>
+                    </div>
+                </div>
+            </accordion-group>
+        </accordion>
+    </div>
+    <br/>
+    <br/>
+    <div>
         <p>Notifications</p>
         <ul id="messages"></ul>
+    </div>
+    <br/>
+    <br/>
+    <div ng-controller="PhoneListCtrl">
+        <a id="pocket-auth-link" href="" target="_blank">Pocket Auth</a>
         <br>Add New Content :
-        <input id="url" type="text"></input>
+        <input id="url" type="text" />
         <button ng-click="addToPocket()">Add</button>
-
-        Filter :
+        <br/>Filter :
         <input type="text" ng-model="searchText">
         <br/>
-        <table>
-            <tr ng-repeat="item in items | filter:searchText">
-                <td>
-                    <input type="checkbox" checklist-model="selected.items" checklist-value="item" ng-click="printSelected()" /><a href="{{item.resolved_url}}">{{item.resolved_title}}</a>
-                    <td/>
-            </tr>
-        </table>
-        <!--img src="http://www.shikshatarang.com/images/reload_captcha.png" alt="Reload" ng-click="reloadData()"/-->
-        <table>
-            <tr ng-repeat="item in selected.items">
-                <td>{{item}}</td>
-            </tr>
-        </table>
-        <input type="button" ng-click="addArticlesAndSend()">Send</button>
+        <div ng-repeat="item in items | filter:searchText">
+            <input type="checkbox" checklist-model="selected.items" checklist-value="item" ng-click="printSelected()" /><a href="{{item.resolved_url}}">{{item.resolved_title}}</a>
+        </div>
+        <button value="Reload" ng-click="reloadData()">Reload</button>
+        <div ng-repeat="item in selected.items">
+            <p>{{item}}</p>
+        </div>
+    </div>
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+    <div ng-controller="FinalSendCtrl">
+        <button type="button" class="btn btn-primary" ng-click=finalSend()>
+            Email
+        </button>
     </div>
 </body>
 

@@ -37,28 +37,22 @@ exports.processMessageEvents = function(request, response) {
         date: d
     });
 };
-exports.addArticlesAndSend = function(request, response) {
-    var message = getMessage(request.body.merge_vars);
-    //console.log("addArticlesAndSend" + JSON.stringify(message));
-    sendTemplateMessage("test", [], message, response);
-}
-exports.uploadImageAndSend = function(request, response) {
-    var base64Data = request.body.imgBase64.replace(/^data:image\/png;base64,/, "");
-    fs.writeFile("public/out.png", base64Data, 'base64', function(err) {
-        if(err) throw err;
-        console.log('It\'s saved!');
+
+exports.sendTemplateMessage = function(request, response, mergevars) {    
+    var message = getMessage(mergevars);    
+    mandrill_client.messages.sendTemplate({
+        "template_name": "test",
+        "template_content": [],
+        "message": message,
+        "async": false,
+        "ip_pool": null,
+        "send_at": null
+    }, function(result) {
+        response.send(200, result);
+    }, function(e) {
+        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
+        response.send(500, e);
     });
-    var mergevars = [{
-        "name": "IMAGENAME",
-        "content": "out.png"
-    }];
-    var message = getMessage(mergevars);
-    sendTemplateMessage("test", [], message, response);
-};
-exports.sendTemplateMessage = function(request, response) {
-    var mergevars = [];
-    var message = getMessage(mergevars);
-    sendTemplateMessage("test", [], message, response);
 };
 
 function getMessage(mergevars) {
@@ -104,20 +98,4 @@ function getMessage(mergevars) {
         "attachments": [],
         "images": []
     };
-};
-
-function sendTemplateMessage(templateName, templateContent, message, response) {
-    mandrill_client.messages.sendTemplate({
-        "template_name": templateName,
-        "template_content": templateContent,
-        "message": message,
-        "async": false,
-        "ip_pool": null,
-        "send_at": null
-    }, function(result) {
-        response.send(200, result);
-    }, function(e) {
-        console.log('A mandrill error occurred: ' + e.name + ' - ' + e.message);
-        response.send(500, e);
-    });
 };
