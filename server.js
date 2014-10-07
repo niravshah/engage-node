@@ -36,8 +36,10 @@ app.post('/final-send', function(request, response) {
     var camp = request.body.data.campaign.replace(/\s+/g, '-').toLowerCase();
     var campaign = acctpath + '/' + camp
     var imgPath = campaign + '/trends.png';
+    var logoImgPath = campaign + '/logo.png';
     var merge_vars = [];
     var base64Data = request.body.data.imgBase64.replace(/^data:image\/png;base64,/, "");
+    var logoImgData = request.body.data.logoImage.replace(/^data:image\/png;base64,/, "");
     var acctExists = fs.existsSync(acctpath);
     if(!acctExists) {
         fs.mkdirSync(acctpath);
@@ -45,8 +47,12 @@ app.post('/final-send', function(request, response) {
     var campExists = fs.existsSync(campaign);
     if(!campExists) {
         fs.mkdirSync(campaign);
-    }
+    }    
     fs.writeFileSync(imgPath, base64Data, 'base64');
+    var logoExisits = fs.existsSync(logoImgPath);
+    if(!logoExisits){
+        fs.writeFileSync(imgPath, logoImgData, 'base64');
+    }
     merge_vars.push({
         "name": "TIMAGE",
         "content": "http://page-alarm.codio.io:3000/" + acct + '/' + camp + '/trends.png'

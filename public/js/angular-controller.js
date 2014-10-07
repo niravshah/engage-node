@@ -76,14 +76,53 @@ phonecatApp.controller('LinkedInCtrl', function($rootScope, $http) {
 });
 phonecatApp.controller('NewsletterCampaignCtrl', function($rootScope, $http) {
     $rootScope.accountCampaign = {};
+    $rootScope.logoImg = {};
     $rootScope.accountCampaign.account = 'Javascript Ninja';
-    $rootScope.accountCampaign.campaign = 'New Campaign';    
-    $rootScope.imgs = [1,2,3,4,5,6,7,8,9];   
+    $rootScope.accountCampaign.campaign = 'New Campaign';
+    $rootScope.imgs = [{
+        id: 1,
+        url: "icons/airplane.png"
+    }, {
+        id: 2,
+        url: "icons/analytics.png"
+    }, {
+        id: 3,
+        url: "icons/android.png"
+    }, {
+        id: 4,
+        url: "icons/archive.png"
+    }, {
+        id: 5,
+        url: "icons/baloons.png"
+    }, {
+        id: 6,
+        url: "icons/beacon.png"
+    }, {
+        id: 7,
+        url: "icons/blueprints.png"
+    }, {
+        id: 8,
+        url: "icons/book.png"
+    }, {
+        id: 9,
+        url: "icons/brain.png"
+    }, {
+        id: 10,
+        url: "icons/briefcase.png"
+    }, {
+        id: 11,
+        url: "icons/brochure.png"
+    }, {
+        id: 12,
+        url: "icons/browser.png"
+    }, {
+        id: 13,
+        url: "icons/bulb.png"
+    }];
     $rootScope.slickSelected = 1
-    $rootScope.slickClicked = function(id){        
+    $rootScope.slickClicked = function(id) {
         $rootScope.slickSelected = id;
     }
-    $rootScope.fileDataToUpload = "";
 });
 phonecatApp.controller('AccordionCtrl', function($scope) {
     $scope.oneAtATime = true;
@@ -91,20 +130,21 @@ phonecatApp.controller('AccordionCtrl', function($scope) {
         open: true,
         isFirstOpen: true,
         isFirstDisabled: false
-    };    
+    };
 });
 phonecatApp.controller('FinalSendCtrl', function($rootScope) {
     $rootScope.finalSend = function() {
         console.log('Final Send');
+        console.log($rootScope.logoImg);
         var data = {};
         data.account = $rootScope.accountCampaign.account;
         data.campaign = $rootScope.accountCampaign.campaign;
         data.imgBase64 = $('#final-canvas')[0].toDataURL("image/png");
         var lnatt = []
-        for(var key in $rootScope.lnattrs) {            
+        for(var key in $rootScope.lnattrs) {
             $rootScope.addNameValPairs(lnatt, key, $rootScope.lnattrs[key]);
         }
-        data.lnattrs = lnatt;       
+        data.lnattrs = lnatt;
         var content = [];
         for(var i = 0; i < $rootScope.selected.items.length; i++) {
             var art = [];
@@ -120,12 +160,13 @@ phonecatApp.controller('FinalSendCtrl', function($rootScope) {
             $rootScope.addNameValPairs(content, i, art);
         }
         data.content = content;
+        data.logoImage = $('#target').attr('src');
         console.log(data);
-        $.ajax({
+        /*$.ajax({
             type: "POST",
             url: "/final-send",
             data: {'data':data}
-        });
+        });*/
     }
     $rootScope.addNameValPairs = function(arr, name, val) {
         arr.push({
