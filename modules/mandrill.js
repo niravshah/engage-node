@@ -41,7 +41,7 @@ exports.processMessageEvents = function(request, response) {
 exports.sendTemplateMessage = function(request, response, mergevars) {    
     var message = getMessage(mergevars);    
     mandrill_client.messages.sendTemplate({
-        "template_name": "test",
+        "template_name": "test3",
         "template_content": [],
         "message": message,
         "async": false,

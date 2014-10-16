@@ -28,18 +28,20 @@ app.get('/pocket-c', pocket.callback);
 app.post('/pocket-add', pocket.addArticle);
 app.get('/pocket-get', pocket.getArticles);
 app.post('/mandrill-events', mandrill.processMessageEvents);
-
 app.get('/send', mandrill.sendTemplateMessage);
 app.post('/final-send', function(request, response) {
+    var merge_vars = [];
+    merge_vars.push({
+        "name": "TITLE",
+        "content": request.body.data.account
+    });
     var acct = request.body.data.account.replace(/\s+/g, '-').toLowerCase();
     var acctpath = 'public/' + acct;
     var camp = request.body.data.campaign.replace(/\s+/g, '-').toLowerCase();
     var campaign = acctpath + '/' + camp
     var imgPath = campaign + '/trends.png';
-    var logoImgPath = campaign + '/logo.png';
-    var merge_vars = [];
+    var logoImgPath;
     var base64Data = request.body.data.imgBase64.replace(/^data:image\/png;base64,/, "");
-    var logoImgData = request.body.data.logoImage.replace(/^data:image\/png;base64,/, "");
     var acctExists = fs.existsSync(acctpath);
     if(!acctExists) {
         fs.mkdirSync(acctpath);
@@ -47,21 +49,36 @@ app.post('/final-send', function(request, response) {
     var campExists = fs.existsSync(campaign);
     if(!campExists) {
         fs.mkdirSync(campaign);
-    }    
-    fs.writeFileSync(imgPath, base64Data, 'base64');
+    }
+    try {
+        fs.writeFile(imgPath, base64Data, 'base64');
+    } catch(err) {
+        console.log('Errror');
+        console.log(err);
+    }
+    if(request.body.data.logoImage != undefined) {
+        var logoImgData = request.body.data.logoImage.replace(/^data:image\/png;base64,/, "");
+        logoImgPath = campaign + '/logo.png';
+    } else {
+        logoImgPath = "http://page-alarm.codio.io:3000/" + request.body.data.logoImageUrl;
+    }
     var logoExisits = fs.existsSync(logoImgPath);
-    if(!logoExisits){
+    if(!logoExisits) {
         fs.writeFileSync(imgPath, logoImgData, 'base64');
     }
     merge_vars.push({
         "name": "TIMAGE",
         "content": "http://page-alarm.codio.io:3000/" + acct + '/' + camp + '/trends.png'
     });
+    merge_vars.push({
+        "name": "LOGO",
+        "content": logoImgPath
+    });
     var content = request.body.data.content;
     for(cont in content) {
         merge_vars = merge_vars.concat(content[cont].content)
-    }    
+    }
     merge_vars = merge_vars.concat(request.body.data.lnattrs);
     console.log(merge_vars);
-    mandrill.sendTemplateMessage(request,response,merge_vars);
+    mandrill.sendTemplateMessage(request, response, merge_vars);
 });

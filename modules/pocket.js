@@ -1,6 +1,6 @@
 var req = require('superagent');
 var consumer_key = "32472-79c3c01d6d9164b5f0403260";
-var engage_callback = "http://page-alarm.codio.io:3000/pocket-c?name=";
+var engage_callback = "http://page-alarm-3000.codio.io/pocket-c?name=";
 var pocket_auth = "https://getpocket.com/auth/authorize?";
 var pocket_req_token = null;
 var qs = require('querystring');
@@ -30,15 +30,16 @@ exports.callback = function(request, response) {
         'code': pocket_req_token
     }).set('Content-Type', 'application/json; charset=UTF8').set('X-Accept', 'application/json').end(function(error, res) {
         request.session.pocket_access_token = res.body.access_token;
-        request.session.name = request.query.name;
+        request.session.name = request.query.name;        
         var to = globals.clients[request.session.name];
         if(to != undefined) {
             console.log("To " + to);
             server.ioCon.to(to).emit('pocket-auth', {
                 'event': 'Pocket Auth'
             });
-        } else {
-            console.log("No open socket");
+        } else {            
+            console.log("Pocket Auth Event - No open socket");
+            console.log(globals.clients);
         }
         response.send(200, 'Pocket Authorization Complete. Please Return to Engage.');
     })

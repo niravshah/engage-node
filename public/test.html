@@ -22,7 +22,7 @@
 
     <script>
         $(function() {
-            var socket = io.connect("http://page-alarm.codio.io:3000/");
+            var socket = io.connect("http://page-alarm-3000.codio.io/");
             socket.on('message', function(data) {
                 console.log(data.message);
                 $('#messages').append('<li>' + data.event + "|" + data.msg.email + '</li>');
@@ -59,7 +59,7 @@
                     var appElement = document.querySelector('[ng-controller=NewsletterCampaignCtrl]');
                     var $scope = angular.element(appElement).scope();
                     reader.onload = function(e) {
-                        $('#logo-image').attr('src', e.target.result);                        
+                        $('#logo-image').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(this.files[0]);
                     $scope.logoImg['type'] = this.files[0].type;
@@ -106,20 +106,24 @@
                     <div class="slick-container" style="width:400px;margin:40px">
                         <div class="slick">
                             <div ng-repeat="img in imgs">
-                                <img src={{img.url}} ng-click="slickClicked(img.id);"/>
+                                <img src={{img.url}} ng-click="slickClicked(img.id);" />
                             </div>
                         </div>
                     </div>
                     <div>
                         SLick Selected : <span id="slick-selected" ng-model="slickSelected">{{slickSelected}}</span>
                     </div>
-
                     <br/>
                     <br/>
                     <div style="width:100px;height:100px">
                         <img id="logo-image" src="" style="width:100%;height:auto;" />
                     </div>
                     <input id="uploadFile" type="file" name="image" class="img" />
+                    <br/>
+                    <br/>
+                    <div>
+                    <canvas id="logo-canvas" height="100" width="300"></canvas>
+                    </div>
                 </div>
 
             </accordion-group>

@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="stylesheet" href="ink.css">
+    <!-- For testing only -->
+
+    <style type="text/css">
+        /* Ink styles go here in production */
+    </style>
+    <style type="text/css">
+        /* Your custom styles go here */
+        @import url(http://fonts.googleapis.com/css?family=Roboto+Slab:700,400,300);
+        @import url(http://fonts.googleapis.com/css?family=Oswald:400,700,300);
+        .template-label {
+            font-family:'Oswald', serif;
+            font-size:28px;
+            font-weight:400;
+        }
+        .purple {
+            background-color:#514483;
+        }
+        @media only screen and (max-width: 600px) {
+            .template-label {
+                font-family:'Oswald', serif;
+                font-size:20px;
+                font-weight:300;
+            }
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <table class="body">
+        <tr>
+            <td class="center" align="center" valign="top">
+                <center>
+                    <table class="container">
+                        <tr>
+                            <td>
+                                <table class="row">
+                                    <tr>
+                                        <td class="wrapper last">
+                                            <table class="twelve columns">
+                                                <tr>
+                                                    <td class="two sub-columns purple" style="padding-bottom:20px;"></td>
+                                                    <td class="expander "></td>
+                                                </tr>
+                                            </table>
+                                            <table class="twelve columns">
+                                                <tr>
+                                                    <td class="two sub-columns center">
+                                                        <img class="center" width="80px" height="80px" src="*|LOGO|*" style="padding-top:10px;padding-left:10px;">
+                                                    </td>
+                                                    <td class="ten sub-columns last" style="text-align:left; vertical-align:middle;padding-top:10px;padding-left:10px;">
+                                                        <span class="template-label">*|TITLE|*</span>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                            <table class="twelve columns">
+                                                <tr>
+                                                    <td class="two sub-columns purple" style="padding-bottom:40px;"></td>
+                                                    <td class="expander "></td>
+                                                </tr>
+                                            </table>
+                                            <table class="twelve columns purple">
+                                                <tr>
+                                                    <td>
+                                                        <center>
+                                                            *|IF:TIMAGE|*
+                                                            <img width="500" height="auto" src="*|TIMAGE|*" class="center">*|ELSE:|*
+                                                            <img width="500" height="150" src="http://placehold.it/500x150&text=No%20Image" class="center">*|END:IF|*
+                                                        </center>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                            <table class="twelve columns purple">
+                                                <tr>
+                                                    <td class="text-pad purple" style="color:white;padding-top:30px;">
+                                                        <p style="color:white;">Latest Trends in Javascript Development</p>
+                                                        <p style="color:white;">Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae. <a href="#">Click it! »</a>
+                                                        </p>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br>
+                                <table class="row">
+                                    <tr>
+                                        *|IF:A0|*
+                                        <td class="wrapper">
+                                            <table class="six columns">
+                                                <tr>
+                                                    <td>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td>
+                                                                    *|IF:I0|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="*|I0|*" class="center">*|ELSE:|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="http://placehold.it/280x150&text=No%20Image" class="center">*|END:IF|*
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td class="text-pad">
+                                                                    <p>*|T0|*</p>
+                                                                    <p>*|D0|*</p>
+                                                                    <a href='*|L0|*'>Read More</a> 
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        *|END:IF|* *|IF:A1|*
+                                        <td class="wrapper last">
+                                            <table class="six columns">
+                                                <tr>
+                                                    <td>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td>
+                                                                    *|IF:I1|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="*|I1|*" class="center">*|ELSE:|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="http://placehold.it/280x150&text=No%20Image" class="center">*|END:IF|*
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td class="text-pad">
+                                                                    <p>*|T1|*</p>
+                                                                    <p>*|D1|*</p>
+                                                                    <a href='*|L1|*'>Read More</a> 
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        *|END:IF|*
+                                    </tr>
+                                    <tr>
+                                        *|IF:A2|*
+                                        <td class="wrapper">
+                                            <table class="six columns">
+                                                <tr>
+                                                    <td>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td>
+                                                                    *|IF:I2|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="*|I2|*" class="center">*|ELSE:|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="http://placehold.it/280x150&text=No%20Image" class="center">*|END:IF|*
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td class="text-pad">
+                                                                    <p>*|T2|*</p>
+                                                                    <p>*|D2|*</p>
+                                                                    <a href='*|L2|*'>Read More</a> 
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        *|END:IF|* *|IF:A3|*
+                                        <td class="wrapper last">
+                                            <table class="six columns">
+                                                <tr>
+                                                    <td>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td>
+                                                                    *|IF:I3|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="*|I3|*" class="center">*|ELSE:|*
+                                                                    <img style="padding-bottom:10px;" width="280" height="150" src="http://placehold.it/280x150&text=No%20Image" class="center">*|END:IF|*
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <table class="row">
+                                                            <tr>
+                                                                <td class="text-pad">
+                                                                    <p>*|T3|*</p>
+                                                                    <p>*|D3|*</p>
+                                                                    <a href='*|L3|*'>Read More</a> 
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        *|END:IF|*
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table class="row">
+                                    <tr>
+                                        <td class="wrapper last">
+                                            <table class="twelve columns">
+                                                <tr>
+                                                    <td class="three sub-columns" style="padding-bottom:0px;">
+                                                        <img height="130" width="130" src="*|ln_image|*">
+                                                    </td>
+                                                    <td class="nine sub-columns last text-pad" style="padding-bottom:0px;padding-top:10px;">
+                                                        <p>Ask *|ln_fname|*</p>
+                                                        <p>*|ln_fname|* *|ln_lname|* is a *|ln_headline|*
+                                                            <p>
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br/>
+                                <table class="row">
+                                    <tr>
+                                        <td class="wrapper last">
+                                            <table class="twelve columns">
+                                                <tr>
+                                                    <td>
+                                                        Footer
+                                                    </td>
+                                                    <td class="expander"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </center>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

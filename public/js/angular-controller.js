@@ -161,12 +161,21 @@ phonecatApp.controller('FinalSendCtrl', function($rootScope) {
         }
         data.content = content;
         data.logoImage = $('#target').attr('src');
+        if(data.logoImage == undefined) {
+            for(img in $rootScope.imgs) {
+                if($rootScope.imgs[img].id == $rootScope.slickSelected) {
+                    data.logoImageUrl = $rootScope.imgs[img].url;
+                }
+            }
+        }
         console.log(data);
-        /*$.ajax({
+        $.ajax({
             type: "POST",
             url: "/final-send",
-            data: {'data':data}
-        });*/
+            data: {
+                'data': data
+            }
+        });
     }
     $rootScope.addNameValPairs = function(arr, name, val) {
         arr.push({
